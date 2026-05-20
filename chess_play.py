@@ -24,7 +24,7 @@ class OnlineHolzSchachGUI:
         try:
             self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.client_socket.connect((self.server_ip, self.server_port))
-            
+	    self.client_socket.settimeout(None)            
             # Erste Nachricht vom Server empfangen (Farbe zuweisen)
             color_data = self.client_socket.recv(1024).decode()
             if "COLOR:W" in color_data:
@@ -35,7 +35,8 @@ class OnlineHolzSchachGUI:
                 self.root.title("Online-Schachspiel - Du bist SCHWARZ")
                 
             # Hintergrund-Thread starten, um gegnerische Züge live zu empfangen
-            threading.Thread(target=self.receive_opponent_moves, daemon=True).start()
+            t = threading.Thread(target=self.receive_opponent_moves, daemon=True)
+	    t.start()
             
         except Exception as e:
             messagebox.showerror("Verbindungsfehler", f"Konnte keine Verbindung zum C++ Server aufbauen:\n{e}\n\nDas Spiel startet im Offline-Modus.")
