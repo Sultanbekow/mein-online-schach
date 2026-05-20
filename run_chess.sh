@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # --- KONFIGURATION ---
-CPP_SERVER_SOURCE="chess_server.cpp"
-CPP_SERVER_BINARY="chess_server"
-PYTHON_CLIENT="schach_spiel_final.py"
+CPP_SERVER_SOURCE="server.cpp"
+CPP_SERVER_BINARY="server"
+PYTHON_CLIENT="chess_play.py"
 PORT=5555
 WEBSOCKET_PORT=8080
 
