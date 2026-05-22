@@ -52,7 +52,7 @@
             ['P','P','P','P','P','P','P','P'],
             ['R','N','B','Q','K','B','N','R']
         ];
-        
+
         const symbols = {
             'R': '♜', 'N': '♞', 'B': '♝', 'Q': '♛', 'K': '♚', 'P': '♟',
             'r': '♜', 'n': '♞', 'b': '♝', 'q': '♛', 'k': '♚', 'p': '♟'
@@ -60,10 +60,10 @@
 
         const boardDiv = document.getElementById('board');
         const statusDiv = document.getElementById('status');
-
+	const NGROK_URL = "NGROK_URL_PLACEHOLDER"
         // WebSocket-Verbindung aufbauen (Nutzt die Brücke des C++ Servers)
         // HINWEIS: Für ein echtes Online-Spiel muss "localhost" durch die öffentliche IP Ihres Servers ersetzt werden.
-        ws = new WebSocket("ws://localhost:8080");
+        ws = new WebSocket("NGROK_URL");
 
         ws.onopen = () => { statusDiv.innerText = "Verbunden! Warte auf Zuweisung der Farbe..."; };
         ws.onmessage = (event) => {
