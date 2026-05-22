@@ -1,0 +1,48 @@
+name: Docker Build & Test Pipeline
+
+on:
+  push:
+    branches: [ "main" ] # Führt die Pipeline bei jedem Push auf den Main-Branch aus
+
+permissions:
+  contents: read
+
+jobs:
+  test-docker-environment:
+    runs-on: ubuntu-latest # Kostengünstige Linux-Testumgebung
+
+    steps:
+    - name: Code auschecken
+      uses: actions/checkout@v4 # Lädt Ihr Repository auf den Testserver
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Docker Image bauen
+      run: |
+        # Baut das Image basierend auf Ihrer Dockerfile
+        docker build -t chess-server-test . 
+
+    - name: Container testweise starten und verifizieren
+      run: |
+        # Startet den Container im Hintergrund
+        docker run -d -p 8080:8080 --name test-running-container chess-server-test
+        
+        # Wartet kurz, damit Server hochfahren kann
+        sleep 5 
+        
+        # Prüft, ob der Container aktiv läuft und nicht direkt abgestürzt ist
+        if [ "$(docker inspect -f '{{.State.Running}}' test-running-container)" = "true" ]; then
+          echo "✅ Docker-Container läuft erfolgreich und die Server-Umgebung ist stabil!"
+        else
+          echo "❌ Fehler: Der Container ist nach dem Start abgestürzt!"
+          docker logs test-running-container
+          exit 1
+        fi
+
+    - name: Container aufräumen
+      if: always()
+      run: |
+        docker stop test-running-container || true
+        docker rm test-running-container || true
+
